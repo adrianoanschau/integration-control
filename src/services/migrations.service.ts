@@ -1,8 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Migration } from '../entities/migration.entity';
 import { Repository } from 'typeorm';
-import { MigrationsEnum } from '../enums/migrations.enum';
+import { Migration } from '../entities/migration.entity';
 
 @Injectable()
 export class MigrationsService {
@@ -11,9 +10,9 @@ export class MigrationsService {
     private repository: Repository<Migration>,
   ) {}
 
-  async selectMigration(migrationName: MigrationsEnum) {
+  async selectMigration(name: string) {
     const [migration] = await this.repository.find({
-      name: migrationName,
+      name,
     });
     return migration;
   }

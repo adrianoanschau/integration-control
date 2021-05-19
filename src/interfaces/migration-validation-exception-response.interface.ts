@@ -1,4 +1,4 @@
-import { ValidationExceptionResponse } from '../../../../src/interfaces/validation-exception-response.interface';
+import { ValidationExceptionResponse } from '@grazz/integration-service';
 
 export interface MigrationValidationExceptionResponse
   extends ValidationExceptionResponse {

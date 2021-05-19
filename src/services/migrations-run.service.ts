@@ -2,7 +2,6 @@ import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { MigrationRun } from '../entities/migration-run.entity';
-import { MigrationsEnum } from '../enums/migrations.enum';
 import { MigrationExecutionDto } from '../interfaces/migration-execution-dto.interface';
 import { MigrationsService } from './migrations.service';
 import { Migration } from '../entities/migration.entity';
@@ -57,7 +56,7 @@ export class MigrationsRunService<T> {
   }
 
   async start(
-    migrationName: MigrationsEnum,
+    migrationName: string,
     executionDto: Omit<MigrationExecutionDto<any>, 'migrations'>,
   ) {
     const migration = await this.migrationsService.selectMigration(

@@ -3,21 +3,28 @@ import { MigrationRun } from '../entities/migration-run.entity';
 import { MigrationResponse } from '../interfaces/response.interface';
 import { MigrationsRunService } from '../services/migrations-run.service';
 import { MigrationExecutionDto } from '../interfaces/migration-execution-dto.interface';
-import { MigrationsEnum } from '../enums/migrations.enum';
 import { MigrationControlDto } from '../interfaces/migration-control-dto.interface';
-import { MigrationStatusEnum, MigrationStatusTxt } from '../enums/migration-status.enum';
+import {
+  MigrationStatusEnum,
+  MigrationStatusTxt,
+} from '../enums/migration-status.enum';
 import { MigrationStaging } from './migration-staging.entity';
 
 export abstract class DataMigrationService<S extends MigrationStaging, D> {
+  private $migrationName: string;
   protected queryRunner: QueryRunner;
   protected run: MigrationRun;
   protected success: MigrationResponse[] = [];
   protected errors: MigrationResponse[] = [];
 
   protected constructor(
-    protected repository: Repository<S>,
-    protected runService: MigrationsRunService<S>,
+    private repository: Repository<S>,
+    private runService: MigrationsRunService<S>,
   ) {}
+
+  set migrationName(migrationName: string) {
+    this.$migrationName = migrationName;
+  }
 
   abstract dtoToEntity(data: D): S;
 
@@ -39,10 +46,7 @@ export abstract class DataMigrationService<S extends MigrationStaging, D> {
   ) {
     this.success = [];
     this.errors = [];
-    this.run = await this.runService.start(
-      MigrationsEnum.RECEIPTS,
-      executionDto,
-    );
+    this.run = await this.runService.start(this.$migrationName, executionDto);
     this.queryRunner = this.repository.manager.connection.createQueryRunner();
     return this.queryRunner.connect();
   }

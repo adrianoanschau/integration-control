@@ -1,8 +1,10 @@
 import { ArgumentsHost, Catch, ExceptionFilter } from '@nestjs/common';
 import { Request, Response } from 'express';
 import * as dot from 'dot-object';
-import { ValidationException } from '../../../../src/exceptions/validation.exception';
-import { ValidationExceptionResponse } from '../../../../src/interfaces/validation-exception-response.interface';
+import {
+  ValidationException,
+  ValidationExceptionResponse,
+} from '@grazz/integration-service';
 import { MigrationValidationExceptionResponse } from '../interfaces/migration-validation-exception-response.interface';
 import {
   MigrationStatusEnum,
