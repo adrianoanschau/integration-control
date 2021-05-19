@@ -17,6 +17,7 @@ export class MigrationsControlService<T> {
     batch_sequence: number,
     client_occurrence: Date,
     client_migration_id: number,
+    status_message: string,
   ) {
     return this.repository.insert({
       run,
@@ -24,6 +25,7 @@ export class MigrationsControlService<T> {
       batch_sequence,
       client_occurrence,
       client_migration_id,
+      status_message,
     });
   }
 }

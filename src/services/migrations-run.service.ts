@@ -71,6 +71,7 @@ export class MigrationsRunService<T> {
     batch_sequence: number,
     client_occurrence: Date,
     migration_id: number,
+    status_message: string,
   ) {
     return this.controlService.save(
       run,
@@ -78,6 +79,7 @@ export class MigrationsRunService<T> {
       batch_sequence,
       client_occurrence,
       migration_id,
+      status_message,
     );
   }
 
