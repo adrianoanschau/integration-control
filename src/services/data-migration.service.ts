@@ -1,11 +1,11 @@
 import { QueryRunner, Repository } from 'typeorm';
 import { MigrationRun } from '../entities/migration-run.entity';
 import { MigrationResponse } from '../interfaces/response.interface';
-import { MigrationsRunService } from '../services/migrations-run.service';
+import { MigrationsRunService } from './migrations-run.service';
 import { MigrationExecutionDto } from '../interfaces/migration-execution-dto.interface';
 import { MigrationControlDto } from '../interfaces/migration-control-dto.interface';
 import { MigrationStatusEnum, MigrationStatusTxt } from '../enums/migration-status.enum';
-import { MigrationStaging } from './migration-staging.entity';
+import { MigrationStaging } from '../contracts/migration-staging.entity';
 
 export abstract class DataMigrationService<S extends MigrationStaging, D> {
   private $migrationName: string;
@@ -68,8 +68,19 @@ export abstract class DataMigrationService<S extends MigrationStaging, D> {
         client_occurrence,
         migration_id,
       );
+      this.success.push({
+        cod_error: MigrationStatusEnum.SUCCESS,
+        message: MigrationStatusTxt[MigrationStatusEnum.SUCCESS],
+        migration_id,
+      });
       await this.queryRunner.commitTransaction();
     } catch (err) {
+      this.errors.push({
+        cod_error: MigrationStatusEnum.INTEGRATION_ERROR,
+        message: MigrationStatusTxt[MigrationStatusEnum.INTEGRATION_ERROR],
+        details: err.status_message,
+        migration_id,
+      });
       await this.queryRunner.rollbackTransaction();
     }
   }
@@ -91,29 +102,19 @@ export abstract class DataMigrationService<S extends MigrationStaging, D> {
         migration_id,
         MigrationStatusTxt[MigrationStatusEnum.SUCCESS],
       );
-      this.success.push({
-        cod_error: MigrationStatusEnum.SUCCESS,
-        message: MigrationStatusTxt[MigrationStatusEnum.SUCCESS],
-        migration_id,
-      });
     } catch (err) {
       const status_message = `${err.name || 'Error'}: ${
         err.message || 'unknown'
       }`;
       await this.runService.register(
         this.run,
-        staging.id,
+        null,
         batch_sequence,
         client_occurrence,
         migration_id,
         status_message,
       );
-      this.errors.push({
-        cod_error: MigrationStatusEnum.INTEGRATION_ERROR,
-        message: MigrationStatusTxt[MigrationStatusEnum.INTEGRATION_ERROR],
-        details: status_message,
-        migration_id,
-      });
+      throw { status_message };
     }
   }
 
