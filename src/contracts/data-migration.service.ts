@@ -5,10 +5,7 @@ import { MigrationsRunService } from '../services/migrations-run.service';
 import { MigrationExecutionDto } from '../interfaces/migration-execution-dto.interface';
 import { MigrationsEnum } from '../enums/migrations.enum';
 import { MigrationControlDto } from '../interfaces/migration-control-dto.interface';
-import {
-  MigrationStatusEnum,
-  MigrationStatusTxt,
-} from '../enums/migration-status.enum';
+import { MigrationStatusEnum, MigrationStatusTxt } from '../enums/migration-status.enum';
 import { MigrationStaging } from './migration-staging.entity';
 
 export abstract class DataMigrationService<S extends MigrationStaging, D> {
@@ -22,13 +19,20 @@ export abstract class DataMigrationService<S extends MigrationStaging, D> {
     protected runService: MigrationsRunService<S>,
   ) {}
 
-  abstract migrate(
-    migration: MigrationExecutionDto<D>,
-  ): Promise<{
+  abstract dtoToEntity(data: D): S;
+
+  async migrate({
+    migrations,
+    ...executionDto
+  }: MigrationExecutionDto<D>): Promise<{
     success: MigrationResponse[];
     error: MigrationResponse[];
-  }>;
-  abstract dtoToEntity(data: D): S;
+  }> {
+    await this.prepareMigrations(executionDto);
+    await this.runMigrations(migrations);
+    await this.finishMigrations();
+    return { success: this.success, error: this.errors };
+  }
 
   protected async prepareMigrations(
     executionDto: Omit<MigrationExecutionDto<D>, 'migrations'>,
