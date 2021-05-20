@@ -99,7 +99,7 @@ export abstract class DataMigrationService<S extends MigrationStaging, D> {
       staging = await this.repository.insert(data);
       await this.runService.register(
         this.run,
-        staging.id,
+        staging.raw.id,
         batch_sequence,
         client_occurrence,
         migration_id,
