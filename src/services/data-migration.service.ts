@@ -44,8 +44,8 @@ export abstract class DataMigrationService<S extends MigrationStaging, D> {
     this.success = [];
     this.errors = [];
     this.run = await this.runService.start(this.$migrationName, executionDto);
-    this.queryRunner = this.repository.manager.connection.createQueryRunner();
-    return this.queryRunner.connect();
+    // this.queryRunner = this.repository.manager.connection.createQueryRunner();
+    // return this.queryRunner.connect();
   }
 
   protected async runMigrations(migrations: MigrationControlDto<D>[]) {
@@ -75,10 +75,13 @@ export abstract class DataMigrationService<S extends MigrationStaging, D> {
       });
       // await this.queryRunner.commitTransaction();
     } catch (err) {
+      console.log(err);
       this.errors.push({
         cod_error: MigrationStatusEnum.INTEGRATION_ERROR,
         message: MigrationStatusTxt[MigrationStatusEnum.INTEGRATION_ERROR],
-        details: err.status_message,
+        details:
+          err.status_message ||
+          `${err.name || 'Error'}: ${err.message || 'unknown'}`,
         migration_id,
       });
       // await this.queryRunner.rollbackTransaction();
@@ -93,7 +96,7 @@ export abstract class DataMigrationService<S extends MigrationStaging, D> {
   ) {
     let staging;
     try {
-      staging = await this.queryRunner.manager.save(this.dtoToEntity(data));
+      staging = await this.repository.insert(data);
       await this.runService.register(
         this.run,
         staging.id,
@@ -119,7 +122,7 @@ export abstract class DataMigrationService<S extends MigrationStaging, D> {
   }
 
   protected async finishMigrations() {
-    await this.queryRunner.release();
+    // await this.queryRunner.release();
     await this.runService.finish(
       this.run,
       this.success.length,

@@ -24,6 +24,7 @@ export class MigControl1620139430625 implements MigrationInterface {
             name: 'mig_stg_id',
             type: 'int',
             unsigned: true,
+            isNullable: true,
           },
           {
             name: 'client_migration_id',
