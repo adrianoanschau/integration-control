@@ -60,7 +60,7 @@ export abstract class DataMigrationService<S extends MigrationStaging, D> {
     client_occurrence,
     data,
   }: MigrationControlDto<D>) {
-    await this.queryRunner.startTransaction();
+    // await this.queryRunner.startTransaction();
     try {
       await this.registerMigration(
         data,
@@ -73,7 +73,7 @@ export abstract class DataMigrationService<S extends MigrationStaging, D> {
         message: MigrationStatusTxt[MigrationStatusEnum.SUCCESS],
         migration_id,
       });
-      await this.queryRunner.commitTransaction();
+      // await this.queryRunner.commitTransaction();
     } catch (err) {
       this.errors.push({
         cod_error: MigrationStatusEnum.INTEGRATION_ERROR,
@@ -81,7 +81,7 @@ export abstract class DataMigrationService<S extends MigrationStaging, D> {
         details: err.status_message,
         migration_id,
       });
-      await this.queryRunner.rollbackTransaction();
+      // await this.queryRunner.rollbackTransaction();
     }
   }
 
