@@ -45,7 +45,7 @@ export class MigrationsRunService<T> {
     if (!in_execution) {
       const insert = await this.repository.insert({
         ...data,
-        run_start: new Date().toISOString(),
+        run_start: new Date(),
         total_lots: executionDto.total_lots,
         total_records: executionDto.total_records,
       });
@@ -89,7 +89,7 @@ export class MigrationsRunService<T> {
         id: run.id,
       },
       {
-        run_end: new Date().toISOString(),
+        run_end: new Date(),
       },
     );
   }
