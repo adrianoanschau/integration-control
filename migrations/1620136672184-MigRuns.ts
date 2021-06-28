@@ -10,72 +10,72 @@ export class MigRuns1620136672184 implements MigrationInterface {
         name: MigRuns1620136672184.tableName,
         columns: [
           {
-            name: 'id',
+            name: 'ID',
             type: 'int',
             isPrimary: true,
             isGenerated: true,
             generationStrategy: 'increment',
           },
           {
-            name: 'mig_migration_id',
+            name: 'MIG_MIGRATION_ID',
             type: 'int',
           },
           {
-            name: 'client_run',
+            name: 'CLIENT_RUN',
             type: 'int',
           },
           {
-            name: 'unity_code',
+            name: 'UNITY_CODE',
             type: 'int',
             width: 3,
           },
           {
-            name: 'run_start',
+            name: 'RUN_START',
             type: 'timestamp',
             default: 'sysdate',
           },
           {
-            name: 'run_end',
+            name: 'RUN_END',
             type: 'timestamp',
             isNullable: true,
             default: 'NULL',
           },
           {
-            name: 'total_lots',
+            name: 'TOTAL_LOTS',
             type: 'int',
             width: 11,
             isNullable: true,
             default: 'NULL',
           },
           {
-            name: 'total_records',
+            name: 'TOTAL_RECORDS',
             type: 'int',
             width: 11,
             isNullable: true,
             default: 'NULL',
           },
           {
-            name: 'success_records',
+            name: 'SUCCESS_RECORDS',
             type: 'int',
             width: 11,
             isNullable: true,
             default: 'NULL',
           },
           {
-            name: 'error_records',
+            name: 'ERROR_RECORDS',
             type: 'int',
             width: 11,
             isNullable: true,
             default: 'NULL',
           },
           {
-            name: 'status',
+            name: 'STATUS',
             type: 'int',
             width: 1,
             default: '0',
           },
           {
-            name: 'status_message',
+            name: 'STATUS_MESSAGE',
             type: 'varchar',
             isNullable: true,
           },
@@ -83,9 +83,9 @@ export class MigRuns1620136672184 implements MigrationInterface {
         foreignKeys: [
           {
             name: 'migrations_run_fk',
-            columnNames: ['mig_migration_id'],
+            columnNames: ['MIG_MIGRATION_ID'],
             referencedTableName: MigMigrations1620135508987.tableName,
-            referencedColumnNames: ['id'],
+            referencedColumnNames: ['ID'],
             onDelete: 'CASCADE',
             onUpdate: 'CASCADE',
           },
@@ -93,7 +93,7 @@ export class MigRuns1620136672184 implements MigrationInterface {
         uniques: [
           {
             name: 'client_run_unity_code_uk',
-            columnNames: ['client_run', 'unity_code'],
+            columnNames: ['CLIENT_RUN', 'UNITY_CODE'],
           },
         ],
       }),
@@ -102,9 +102,6 @@ export class MigRuns1620136672184 implements MigrationInterface {
   }
 
   public async down(queryRunner: QueryRunner): Promise<void> {
-    await queryRunner.dropTable(
-      MigRuns1620136672184.tableName,
-      true,
-    );
+    await queryRunner.dropTable(MigRuns1620136672184.tableName, true);
   }
 }

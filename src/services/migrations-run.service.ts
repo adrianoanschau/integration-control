@@ -21,10 +21,10 @@ export class MigrationsRunService<T> {
     run: MigrationRun,
     executionDto: Omit<MigrationExecutionDto<any>, 'migrations'>,
   ) {
-    if (run.total_lots !== executionDto.total_lots) {
+    if (run.TOTAL_LOTS !== executionDto.total_lots) {
       throw new InvalidRunException();
     }
-    if (run.total_records !== executionDto.total_records) {
+    if (run.TOTAL_RECORDS !== executionDto.total_records) {
       throw new InvalidRunException();
     }
   }
@@ -35,21 +35,21 @@ export class MigrationsRunService<T> {
   ) {
     const data = {
       migration,
-      client_run: executionDto.execution,
-      unity_code: executionDto.unity_code,
+      CLIENT_RUN: executionDto.execution,
+      UNITY_CODE: executionDto.unity_code,
     };
     let [in_execution] = await this.repository.find({
       ...data,
-      run_end: null,
+      RUN_END: null,
     });
     if (!in_execution) {
       const insert = await this.repository.insert({
         ...data,
-        run_start: new Date(),
-        total_lots: executionDto.total_lots,
-        total_records: executionDto.total_records,
+        RUN_START: new Date(),
+        TOTAL_LOTS: executionDto.total_lots,
+        TOTAL_RECORDS: executionDto.total_records,
       });
-      in_execution = await this.repository.findOne(insert.raw.id);
+      in_execution = await this.repository.findOne(insert.raw.ID);
     }
     this.validateExecution(in_execution, executionDto);
     return in_execution;
@@ -86,10 +86,10 @@ export class MigrationsRunService<T> {
   private async close(run: MigrationRun) {
     return this.repository.update(
       {
-        id: run.id,
+        ID: run.ID,
       },
       {
-        run_end: new Date(),
+        RUN_END: new Date(),
       },
     );
   }
@@ -97,17 +97,17 @@ export class MigrationsRunService<T> {
   async finish(run: MigrationRun, success: number, error: number) {
     const update = await this.repository.update(
       {
-        id: run.id,
+        ID: run.ID,
       },
       {
-        success_records: (run.success_records || 0) + success,
-        error_records: (run.error_records || 0) + error,
+        SUCCESS_RECORDS: (run.SUCCESS_RECORDS || 0) + success,
+        ERROR_RECORDS: (run.ERROR_RECORDS || 0) + error,
       },
     );
-    run = await this.repository.findOne(run.id);
+    run = await this.repository.findOne(run.ID);
     if (
-      run.total_records ===
-      (run.success_records || 0) + (run.error_records || 0)
+      run.TOTAL_RECORDS ===
+      (run.SUCCESS_RECORDS || 0) + (run.ERROR_RECORDS || 0)
     ) {
       await this.close(run);
     }

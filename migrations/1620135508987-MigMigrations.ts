@@ -9,14 +9,14 @@ export class MigMigrations1620135508987 implements MigrationInterface {
         name: MigMigrations1620135508987.tableName,
         columns: [
           {
-            name: 'id',
+            name: 'ID',
             type: 'int',
             isPrimary: true,
             isGenerated: true,
             generationStrategy: 'increment',
           },
           {
-            name: 'name',
+            name: 'NAME',
             type: 'varchar',
             length: '32',
             isUnique: true,

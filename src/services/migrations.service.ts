@@ -10,9 +10,9 @@ export class MigrationsService {
     private repository: Repository<Migration>,
   ) {}
 
-  async selectMigration(name: string) {
+  async selectMigration(NAME: string) {
     const [migration] = await this.repository.find({
-      name,
+      NAME,
     });
     return migration;
   }

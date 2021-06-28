@@ -10,30 +10,30 @@ import { MigrationRun } from './migration-run.entity';
 @Entity('MIG_CONTROL')
 export class MigrationControl {
   @PrimaryGeneratedColumn()
-  id: number;
+  ID: number;
 
   @OneToOne(() => MigrationRun)
-  @JoinColumn({ name: 'mig_run_id' })
+  @JoinColumn({ name: 'MIG_RUN_ID' })
   run: MigrationRun;
 
   @Column()
-  mig_stg_id: number;
+  MIG_STG_ID: number;
 
   @Column()
-  client_migration_id: number;
+  CLIENT_MIGRATION_ID: number;
 
   @Column()
-  batch_sequence: number;
+  BATCH_SEQUENCE: number;
 
   @Column()
-  status: number;
+  STATUS: number;
 
   @Column()
-  status_message: string;
+  STATUS_MESSAGE: string;
 
   @Column()
-  client_occurrence: Date;
+  CLIENT_OCCURRENCE: Date;
 
   @Column()
-  service_occurrence: string;
+  SERVICE_OCCURRENCE: string;
 }

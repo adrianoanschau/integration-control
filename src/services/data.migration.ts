@@ -75,7 +75,6 @@ export class DataMigration<S extends MigrationStaging, D> {
         migration_id,
       });
     } catch (err) {
-      console.log(err);
       this.errors.push({
         cod_error: MigrationStatusEnum.INTEGRATION_ERROR,
         message: MigrationStatusTxt[MigrationStatusEnum.INTEGRATION_ERROR],
@@ -87,6 +86,18 @@ export class DataMigration<S extends MigrationStaging, D> {
     }
   }
 
+  private static convertKeysToUppercase<T>(object: T): T {
+    const converted = {};
+    new Map(
+      Object.entries(object).map((entry) => [entry[0].toUpperCase(), entry[1]]),
+    ).forEach((value, key) => {
+      const keys = key.split('.'),
+        last = keys.pop();
+      keys.reduce((r, a) => (r[a] = r[a] || {}), converted)[last] = value;
+    });
+    return converted as T;
+  }
+
   private async registerMigration(
     data: D,
     batch_sequence: number,
@@ -95,7 +106,9 @@ export class DataMigration<S extends MigrationStaging, D> {
   ) {
     let staging;
     try {
-      staging = await this.repository.insert(data);
+      staging = await this.repository.insert(
+        DataMigration.convertKeysToUppercase<D>(data),
+      );
       await this.runService.register(
         this.run,
         staging.raw.id,

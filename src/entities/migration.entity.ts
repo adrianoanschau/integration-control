@@ -4,10 +4,10 @@ import { MigrationRun } from './migration-run.entity';
 @Entity('MIG_MIGRATIONS')
 export class Migration {
   @PrimaryGeneratedColumn()
-  id: number;
+  ID: number;
 
   @Column()
-  name: string;
+  NAME: string;
 
   @OneToMany(() => MigrationRun, (run) => run.migration)
   runs: MigrationRun[];

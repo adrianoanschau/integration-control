@@ -10,49 +10,49 @@ export class MigControl1620139430625 implements MigrationInterface {
         name: MigControl1620139430625.tableName,
         columns: [
           {
-            name: 'id',
+            name: 'ID',
             type: 'int',
             isPrimary: true,
             isGenerated: true,
             generationStrategy: 'increment',
           },
           {
-            name: 'mig_run_id',
+            name: 'MIG_RUN_ID',
             type: 'int',
           },
           {
-            name: 'mig_stg_id',
+            name: 'MIG_STG_ID',
             type: 'int',
             unsigned: true,
             isNullable: true,
           },
           {
-            name: 'client_migration_id',
+            name: 'CLIENT_MIGRATION_ID',
             type: 'int',
             unsigned: true,
           },
           {
-            name: 'batch_sequence',
+            name: 'BATCH_SEQUENCE',
             type: 'int',
             width: 2,
           },
           {
-            name: 'status',
+            name: 'STATUS',
             type: 'int',
             width: 1,
             default: 0,
           },
           {
-            name: 'status_message',
+            name: 'STATUS_MESSAGE',
             type: 'varchar',
             isNullable: true,
           },
           {
-            name: 'client_occurrence',
+            name: 'CLIENT_OCCURRENCE',
             type: 'timestamp',
           },
           {
-            name: 'service_occurrence',
+            name: 'SERVICE_OCCURRENCE',
             type: 'timestamp',
             default: 'sysdate',
           },
@@ -60,9 +60,9 @@ export class MigControl1620139430625 implements MigrationInterface {
         foreignKeys: [
           {
             name: 'receptions_run_fk',
-            columnNames: ['mig_run_id'],
+            columnNames: ['MIG_RUN_ID'],
             referencedTableName: MigRuns1620136672184.tableName,
-            referencedColumnNames: ['id'],
+            referencedColumnNames: ['ID'],
             onDelete: 'CASCADE',
             onUpdate: 'CASCADE',
           },

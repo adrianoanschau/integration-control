@@ -10,39 +10,39 @@ import { Migration } from './migration.entity';
 @Entity('MIG_RUNS')
 export class MigrationRun {
   @PrimaryGeneratedColumn()
-  id: number;
+  ID: number;
 
   @OneToOne(() => Migration)
-  @JoinColumn({ name: 'mig_migration_id' })
+  @JoinColumn({ name: 'MIG_MIGRATION_ID' })
   migration: Migration;
 
   @Column({ type: 'int' })
-  client_run: number;
+  CLIENT_RUN: number;
 
   @Column({ type: 'int', width: 3 })
-  unity_code: number;
+  UNITY_CODE: number;
 
   @Column({ type: 'timestamp' })
-  run_start: Date;
+  RUN_START: Date;
 
   @Column({ type: 'timestamp', default: null })
-  run_end: Date;
+  RUN_END: Date;
 
   @Column({ type: 'int', width: 11, default: null })
-  total_lots: number;
+  TOTAL_LOTS: number;
 
   @Column({ type: 'int', width: 11, default: null })
-  total_records: number;
+  TOTAL_RECORDS: number;
 
   @Column({ type: 'int', width: 11, default: null })
-  success_records: number;
+  SUCCESS_RECORDS: number;
 
   @Column({ type: 'int', width: 11, default: null })
-  error_records: number;
+  ERROR_RECORDS: number;
 
   @Column({ type: 'int', width: 1 })
-  status: number;
+  STATUS: number;
 
   @Column()
-  status_message: string;
+  STATUS_MESSAGE: string;
 }

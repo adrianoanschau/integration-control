@@ -13,19 +13,19 @@ export class MigrationsControlService<T> {
 
   async save(
     run: MigrationRun,
-    mig_stg_id: number,
-    batch_sequence: number,
-    client_occurrence: Date,
-    client_migration_id: number,
-    status_message: string,
+    MIG_STG_ID: number,
+    BATCH_SEQUENCE: number,
+    CLIENT_OCCURRENCE: Date,
+    CLIENT_MIGRATION_ID: number,
+    STATUS_MESSAGE: string,
   ) {
     return this.repository.insert({
       run,
-      mig_stg_id,
-      batch_sequence,
-      client_occurrence,
-      client_migration_id,
-      status_message,
+      MIG_STG_ID,
+      BATCH_SEQUENCE,
+      CLIENT_OCCURRENCE,
+      CLIENT_MIGRATION_ID,
+      STATUS_MESSAGE,
     });
   }
 }
