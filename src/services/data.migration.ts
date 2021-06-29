@@ -9,6 +9,10 @@ import {
   MigrationStatusTxt,
 } from '../enums/migration-status.enum';
 import { MigrationStaging } from '../contracts/migration-staging.entity';
+import {
+  MigrationRunStatusEnum,
+  MigrationRunStatusTxt
+} from "@grazz/integration-control/enums/migration-run-status.enum";
 
 export class DataMigration<S extends MigrationStaging, D> {
   protected run: MigrationRun;
@@ -36,9 +40,20 @@ export class DataMigration<S extends MigrationStaging, D> {
     success: MigrationResponse[];
     error: MigrationResponse[];
   }> {
-    await this.prepareMigrations(executionDto);
-    await this.runMigrations(migrations);
-    await this.finishMigrations();
+    try {
+      await this.prepareMigrations(executionDto);
+      await this.runMigrations(migrations);
+      await this.finishMigrations();
+    } catch (err) {
+      this.errors.push({
+        cod_error: MigrationRunStatusEnum.INTEGRATION_ERROR,
+        message:
+          MigrationRunStatusTxt[MigrationRunStatusEnum.INTEGRATION_ERROR],
+        details:
+          err.status_message ||
+          `${err.name || 'Error'}: ${err.message || 'unknown'}`,
+      });
+    }
     return { success: this.success, error: this.errors };
   }
 
