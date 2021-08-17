@@ -19,7 +19,7 @@ export class MigrationsRunService<T> {
 
   private validateExecution(
     run: MigrationRun,
-    executionDto: Omit<MigrationExecutionDto<any>, 'migrations'>,
+    executionDto: Omit<MigrationExecutionDto, 'migrations'>,
   ) {
     if (run.TOTAL_LOTS !== executionDto.total_lots) {
       throw new InvalidRunException();
@@ -31,7 +31,7 @@ export class MigrationsRunService<T> {
 
   private async open(
     migration: Migration,
-    executionDto: Omit<MigrationExecutionDto<any>, 'migrations'>,
+    executionDto: Omit<MigrationExecutionDto, 'migrations'>,
   ) {
     const data = {
       migration,
@@ -57,7 +57,7 @@ export class MigrationsRunService<T> {
 
   async start(
     migrationName: string,
-    executionDto: Omit<MigrationExecutionDto<any>, 'migrations'>,
+    executionDto: Omit<MigrationExecutionDto, 'migrations'>,
   ) {
     const migration = await this.migrationsService.selectMigration(
       migrationName,

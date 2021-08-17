@@ -32,7 +32,7 @@ export class DataMigration<S extends MigrationStaging, D> {
   async migrate({
     migrations,
     ...executionDto
-  }: MigrationExecutionDto<D>): Promise<{
+  }: MigrationExecutionDto): Promise<{
     success: MigrationResponse[];
     error: MigrationResponse[];
   }> {
@@ -43,14 +43,14 @@ export class DataMigration<S extends MigrationStaging, D> {
   }
 
   protected async prepareMigrations(
-    executionDto: Omit<MigrationExecutionDto<D>, 'migrations'>,
+    executionDto: Omit<MigrationExecutionDto, 'migrations'>,
   ) {
     this.success = [];
     this.errors = [];
     this.run = await this.runService.start(this.migrationName, executionDto);
   }
 
-  protected async runMigrations(migrations: MigrationControlDto<D>[]) {
+  protected async runMigrations(migrations: MigrationControlDto[]) {
     for (const migration of migrations) {
       await this.processMigration(migration);
     }
@@ -61,7 +61,7 @@ export class DataMigration<S extends MigrationStaging, D> {
     batch_sequence,
     client_occurrence,
     data,
-  }: MigrationControlDto<D>) {
+  }: MigrationControlDto) {
     try {
       await this.registerMigration(
         data,
