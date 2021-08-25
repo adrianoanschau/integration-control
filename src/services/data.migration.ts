@@ -39,7 +39,7 @@ export class DataMigration<S extends MigrationStaging, D> {
   }> {
     try {
       await this.prepareMigrations(executionDto);
-      await this.runMigrations(migrations);
+      await this.runMigrations(migrations, transformData);
       await this.finishMigrations();
     } catch (err) {
       this.errors.push({
@@ -120,13 +120,13 @@ export class DataMigration<S extends MigrationStaging, D> {
   private async registerMigration(
     data: D,
     batch_sequence: number,
-    client_occurrence: Date,
+    client_occurrence: string,
     migration_id: number,
     transformData?: { [k: string]: (p: any) => any },
   ) {
     let staging;
     try {
-      Object.entries(transformData).forEach(([key, value]) => {
+      Object.entries(transformData || {}).forEach(([key, value]) => {
         const newValue = value(data[key]);
         data[key] = () => newValue;
       });

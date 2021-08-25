@@ -1,12 +1,10 @@
-import { IsDate, IsNumber } from 'class-validator';
-import { Transform } from 'class-transformer';
+import { IsDateString, IsNumber } from 'class-validator';
 
 export class MigrationControlDto {
   @IsNumber()
   migration_id: number;
-  @Transform(({ value }) => new Date(value))
-  @IsDate()
-  client_occurrence: Date;
+  @IsDateString()
+  client_occurrence: string;
   @IsNumber()
   batch_sequence: number;
   data: any;

@@ -32,7 +32,7 @@ export class MigrationControl {
   STATUS_MESSAGE: string;
 
   @Column()
-  CLIENT_OCCURRENCE: Date;
+  CLIENT_OCCURRENCE: string;
 
   @Column()
   SERVICE_OCCURRENCE: string;

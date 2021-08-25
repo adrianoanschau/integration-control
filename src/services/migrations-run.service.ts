@@ -68,7 +68,7 @@ export class MigrationsRunService<T> {
     run: MigrationRun,
     staging_id: number,
     batch_sequence: number,
-    client_occurrence: Date,
+    client_occurrence: string,
     migration_id: number,
     status_message: string,
   ) {
