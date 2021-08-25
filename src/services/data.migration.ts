@@ -4,10 +4,7 @@ import { MigrationResponse } from '../interfaces/response.interface';
 import { MigrationsRunService } from './migrations-run.service';
 import { MigrationExecutionDto } from '../interfaces/migration-execution-dto.interface';
 import { MigrationControlDto } from '../interfaces/migration-control-dto.interface';
-import {
-  MigrationStatusEnum,
-  MigrationStatusTxt,
-} from '../enums/migration-status.enum';
+import { MigrationStatusEnum, MigrationStatusTxt } from '../enums/migration-status.enum';
 import { MigrationStaging } from '../contracts/migration-staging.entity';
 import {
   MigrationRunStatusEnum,
@@ -33,10 +30,10 @@ export class DataMigration<S extends MigrationStaging, D> {
     return new DataMigration<S, D>(migrationName, repository, runService);
   }
 
-  async migrate({
-    migrations,
-    ...executionDto
-  }: MigrationExecutionDto<D>): Promise<{
+  async migrate(
+    { migrations, ...executionDto }: MigrationExecutionDto,
+    transformData?: { [k: string]: (p: any) => any },
+  ): Promise<{
     success: MigrationResponse[];
     error: MigrationResponse[];
   }> {
@@ -58,31 +55,38 @@ export class DataMigration<S extends MigrationStaging, D> {
   }
 
   protected async prepareMigrations(
-    executionDto: Omit<MigrationExecutionDto<D>, 'migrations'>,
+    executionDto: Omit<MigrationExecutionDto, 'migrations'>,
   ) {
     this.success = [];
     this.errors = [];
     this.run = await this.runService.start(this.migrationName, executionDto);
   }
 
-  protected async runMigrations(migrations: MigrationControlDto<D>[]) {
+  protected async runMigrations(
+    migrations: MigrationControlDto[],
+    transformData?: { [k: string]: (p: any) => any },
+  ) {
     for (const migration of migrations) {
-      await this.processMigration(migration);
+      await this.processMigration(migration, transformData);
     }
   }
 
-  private async processMigration({
-    migration_id,
-    batch_sequence,
-    client_occurrence,
-    data,
-  }: MigrationControlDto<D>) {
+  private async processMigration(
+    {
+      migration_id,
+      batch_sequence,
+      client_occurrence,
+      data,
+    }: MigrationControlDto,
+    transformData?: { [k: string]: (p: any) => any },
+  ) {
     try {
       await this.registerMigration(
         data,
         batch_sequence,
         client_occurrence,
         migration_id,
+        transformData,
       );
       this.success.push({
         cod_error: MigrationStatusEnum.SUCCESS,
@@ -118,9 +122,14 @@ export class DataMigration<S extends MigrationStaging, D> {
     batch_sequence: number,
     client_occurrence: Date,
     migration_id: number,
+    transformData?: { [k: string]: (p: any) => any },
   ) {
     let staging;
     try {
+      Object.entries(transformData).forEach(([key, value]) => {
+        const newValue = value(data[key]);
+        data[key] = () => newValue;
+      });
       staging = await this.repository.insert(
         DataMigration.convertKeysToUppercase<D>(data),
       );

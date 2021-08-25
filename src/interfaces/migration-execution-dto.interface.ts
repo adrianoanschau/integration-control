@@ -1,9 +1,17 @@
-import { MigrationControlDto } from './migration-control-dto.interface';
+import { IsNumber, ValidateNested } from 'class-validator';
+import { MigrationControlDto } from '@grazz/integration-control/interfaces/migration-control-dto.interface';
+import { Type } from 'class-transformer';
 
-export interface MigrationExecutionDto<T> {
+export class MigrationExecutionDto {
+  @IsNumber()
   execution: number;
+  @IsNumber()
   unity_code: number;
+  @IsNumber()
   total_lots: number;
+  @IsNumber()
   total_records: number;
-  migrations: MigrationControlDto<T>[];
+  @ValidateNested()
+  @Type(() => MigrationControlDto)
+  migrations: MigrationControlDto[];
 }

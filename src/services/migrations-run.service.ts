@@ -19,7 +19,7 @@ export class MigrationsRunService<T> {
 
   private validateExecution(
     run: MigrationRun,
-    executionDto: Omit<MigrationExecutionDto<any>, 'migrations'>,
+    executionDto: Omit<MigrationExecutionDto, 'migrations'>,
   ) {
     if (run.TOTAL_LOTS !== executionDto.total_lots) {
       throw new InvalidRunException();
@@ -31,7 +31,7 @@ export class MigrationsRunService<T> {
 
   private async open(
     migration: Migration,
-    executionDto: Omit<MigrationExecutionDto<any>, 'migrations'>,
+    executionDto: Omit<MigrationExecutionDto, 'migrations'>,
   ) {
     const data = {
       migration,
@@ -45,7 +45,6 @@ export class MigrationsRunService<T> {
     if (!in_execution) {
       const insert = await this.repository.insert({
         ...data,
-        RUN_START: new Date(),
         TOTAL_LOTS: executionDto.total_lots,
         TOTAL_RECORDS: executionDto.total_records,
       });
@@ -57,7 +56,7 @@ export class MigrationsRunService<T> {
 
   async start(
     migrationName: string,
-    executionDto: Omit<MigrationExecutionDto<any>, 'migrations'>,
+    executionDto: Omit<MigrationExecutionDto, 'migrations'>,
   ) {
     const migration = await this.migrationsService.selectMigration(
       migrationName,
@@ -89,7 +88,7 @@ export class MigrationsRunService<T> {
         ID: run.ID,
       },
       {
-        RUN_END: new Date(),
+        RUN_END: () => 'sysdate',
       },
     );
   }
