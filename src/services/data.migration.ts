@@ -4,12 +4,12 @@ import { MigrationResponse } from '../interfaces/response.interface';
 import { MigrationsRunService } from './migrations-run.service';
 import { MigrationExecutionDto } from '../interfaces/migration-execution-dto.interface';
 import { MigrationControlDto } from '../interfaces/migration-control-dto.interface';
-import { MigrationStatusEnum, MigrationStatusTxt } from '../enums/migration-status.enum';
-import { MigrationStaging } from '../contracts/migration-staging.entity';
 import {
-  MigrationRunStatusEnum,
-  MigrationRunStatusTxt
-} from "@grazz/integration-control/enums/migration-run-status.enum";
+  MigrationStatusEnum,
+  MigrationStatusTxt,
+} from '../enums/migration-status.enum';
+import { MigrationStaging } from '../contracts/migration-staging.entity';
+import { UnprocessableEntityException } from '@nestjs/common';
 
 export class DataMigration<S extends MigrationStaging, D> {
   protected run: MigrationRun;
@@ -35,23 +35,19 @@ export class DataMigration<S extends MigrationStaging, D> {
     transformData?: { [k: string]: (p: any) => any },
   ): Promise<{
     success: MigrationResponse[];
-    error: MigrationResponse[];
+    errors: MigrationResponse[];
   }> {
     try {
       await this.prepareMigrations(executionDto);
       await this.runMigrations(migrations, transformData);
       await this.finishMigrations();
     } catch (err) {
-      this.errors.push({
-        cod_error: MigrationRunStatusEnum.INTEGRATION_ERROR,
-        message:
-          MigrationRunStatusTxt[MigrationRunStatusEnum.INTEGRATION_ERROR],
-        details:
-          err.status_message ||
+      throw new UnprocessableEntityException(
+        err.status_message ||
           `${err.name || 'Error'}: ${err.message || 'unknown'}`,
-      });
+      );
     }
-    return { success: this.success, error: this.errors };
+    return { success: this.success, errors: this.errors };
   }
 
   protected async prepareMigrations(
