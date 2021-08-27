@@ -35,7 +35,7 @@ export class DataMigration<S extends MigrationStaging, D> {
     transformData?: { [k: string]: (p: any) => any },
   ): Promise<{
     success: MigrationResponse[];
-    errors: MigrationResponse[];
+    error: MigrationResponse[];
   }> {
     try {
       await this.prepareMigrations(executionDto);
@@ -47,7 +47,7 @@ export class DataMigration<S extends MigrationStaging, D> {
           `${err.name || 'Error'}: ${err.message || 'unknown'}`,
       );
     }
-    return { success: this.success, errors: this.errors };
+    return { success: this.success, error: this.errors };
   }
 
   protected async prepareMigrations(
