@@ -59,7 +59,7 @@ export class MigControl1620139430625 implements MigrationInterface {
         ],
         foreignKeys: [
           {
-            name: 'receptions_run_fk',
+            name: 'control_run_fk',
             columnNames: ['MIG_RUN_ID'],
             referencedTableName: MigRuns1620136672184.tableName,
             referencedColumnNames: ['ID'],

@@ -131,7 +131,7 @@ export class DataMigration<S extends MigrationStaging, D> {
       );
       await this.runService.register(
         this.run,
-        staging.raw.id,
+        staging.raw.ID,
         batch_sequence,
         client_occurrence,
         migration_id,
